@@ -1,0 +1,92 @@
+[city]
+slug = "kingston"
+name = "Kingston"
+# "Neighbourhood Boundaries": 42 polygons, all names unique and mixed-case
+# (Alwington, Bayridge East, CFB Kingston, ...), point-tested 2026-08-16 at
+# 99.98% of snapshot-47 addresses. The source rows even carry a matching
+# NEIGHBOURHOOD prop (99.997%) — a cross-check available to future QA.
+# CityofKingstonBoundary + Former_Municipal_Boundaries layers noted for
+# 10-boundary-clipping.md.
+neighbourhoods_url = "https://services1.arcgis.com/5GRYvurYYUwAecLQ/arcgis/rest/services/Neighbourhood_Boundaries/FeatureServer/0/query?where=1%3D1&outFields=HOODNAME&outSR=4326&f=geojson"
+neighbourhood_name_field = "HOODNAME"
+
+[source]
+sqlite_path = "C:/Users/kk/Code/ontario-address-changes/data/kingston/kingston.db"
+
+# Per-city projection recipe (multi-city Tier 2), measured against snapshot 47
+# (2026-08-15 — the freshest source in the portfolio; ADDRESS_ID is a stable
+# key).
+[source_fields]
+# STREET: 97.4% typed, ALL-CAPS abbreviated (ST/BLVD/CRES/DR) — all in the
+# expansion tables; TODO §9 gates upload.
+street_from = "street"
+# NOT "full": FULL_ADDRESS deviates from number+street on 30,984 rows —
+# almost exactly the 30,957 unit rows, i.e. the Guelph unit-appending trap.
+full_from = "number+street"
+# MUNICIPALITY is the constant 'KINGSTON' (all 77,386 rows) — undeclared
+# for-cause, the Cornwall precedent. The 1998 amalgamation left no
+# per-row former-municipality field; Former_Municipal_Boundaries exists as
+# polygons if that ever matters.
+# ELECTORAL_DISTRICT_NAME is the ward analogue (string).
+ward = "props:ELECTORAL_DISTRICT_NAME"
+# UNIT on 30,957 rows (40.0% — the highest unit share in the portfolio;
+# UNIT_TYPE rides along in props). ADDRESS_NUMBER_SUFFIX exists on 380 rows
+# and is NOT the range machinery (no lo/hi pair) — left in props.
+unit = "unit"
+# No status field, no ranges, no class — verified against snapshot-47 props
+# (17 keys, 2026-08-16). POSTAL_CODE is 98% populated (no capability yet).
+
+# 09-units.md option 2. Measured 2026-08-16 on snapshot 47: 77,386 rows ->
+# 45,387 distinct (number, street) pairs.
+[units]
+policy = "collapse-to-civic"
+
+[run_defaults]
+# Densest downtown cell (4,626 rows) for first test runs.
+bbox = [44.232, -76.500, 44.244, -76.488]
+overpass_url = "https://overpass-api.de/api/interpreter"
+
+[osm]
+source = "local"
+# Same Ontario PBF as every city in the portfolio.
+pbf_url = "https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf"
+# Source-data extent (77,386 rows measured 2026-08-16: lat 44.20843..44.47077,
+# lon -76.70689..-76.23501) plus a small margin. Kingston is a separated city
+# inside Frontenac County (the Guelph/Wellington containment shape) and the
+# rectangle spans the Cataraqui River; see 10-boundary-clipping.md.
+city_bbox = [44.19, -76.73, 44.49, -76.21]
+extract_dir = "data/osm"
+
+[conflation]
+match_radius_m = 100
+match_near_m = 15
+
+[checks]
+match_far = true
+# suffix_range deliberately absent: ADDRESS_NUMBER_SUFFIX has no lo/hi pair.
+city_duplicate = true
+missing_sample = true
+nearby_street_mismatch = true
+
+[check_params.city_duplicate]
+radius_m = 3.0
+
+[check_params.missing_sample]
+every_nth = 50
+
+[check_params.nearby_street_mismatch]
+radius_m = 20.0
+
+[check_params.match_number_drift]
+slack_m = 2.0
+
+[upload]
+changesets_per_minute = 1
+changeset_comment_template = "{city} Open Data address import, run={run_name}"
+
+[export]
+attribution = "City of Kingston Open Data"
+# Entry-state probe of 2026-08-16 pending at write time (see README). No
+# proposal exists; write and publish one per the OSM Import Guidelines
+# BEFORE any production upload, and mind TODO §9 (title-casing) first.
+import_plan = ""
