@@ -33,6 +33,17 @@ Boundaries" polygons (99.98% point coverage) — and the source rows carry a
 matching `NEIGHBOURHOOD` prop, a future QA cross-check. Kingston is a
 separated city inside Frontenac County.
 
+Entry state probed 2026-08-16 (`onboarding/entry-state-2026-08-16.json`):
+**greenfield** — CanVec 6.0 seed (893 of 1,617 sampled), Matthew Darwin's
+2018 rename retag, and `zzptichka`'s properly-tagged 2018 Ontario Building
+Import (buildings, with addresses riding along). `DenisCarriere` touched
+city data back in 2014 ("source = City of Kingston", 468 changes).
+Currently active: `trigonometric` addressing via StreetComplete surveys
+(260 sampled elements in 2025, changesets into 2026-03). An import target;
+contacts: trigonometric (active), zzptichka (experienced importer,
+Ontario-wide), Matthew Darwin. Convention: `addr:city=Kingston`,
+`addr:province=Ontario` (86 vs 5).
+
 Before any production upload: wiki proposal page, forum announcement, and
 feedback window per the
 [OSM Import Guidelines](https://wiki.openstreetmap.org/wiki/Import/Guidelines)
