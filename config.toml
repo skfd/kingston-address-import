@@ -18,7 +18,8 @@ sqlite_path = "C:/Users/kk/Code/ontario-address-changes/data/kingston/kingston.d
 # key).
 [source_fields]
 # STREET: 97.4% typed, ALL-CAPS abbreviated (ST/BLVD/CRES/DR) — all in the
-# expansion tables; TODO §9 gates upload.
+# expansion tables; title-cased on export since 2026-08-29 ([export]
+# street_case).
 street_from = "street"
 # NOT "full": FULL_ADDRESS deviates from number+street on 30,984 rows —
 # almost exactly the 30,957 unit rows, i.e. the Guelph unit-appending trap.
@@ -88,5 +89,14 @@ changeset_comment_template = "{city} Open Data address import, run={run_name}"
 attribution = "City of Kingston Open Data"
 # Entry-state probe of 2026-08-16 pending at write time (see README). No
 # proposal exists; write and publish one per the OSM Import Guidelines
-# BEFORE any production upload, and mind TODO §9 (title-casing) first.
+# BEFORE any production upload.
 import_plan = ""
+
+# The source shouts. Title-cased on the export path only, so street_raw keeps
+# the source spelling and conflation is untouched. Swept over all 1,265 distinct
+# street names 2026-08-29: no all-caps word survives the step.
+# One exception, and it is the documented limit rather than a bug: the source
+# itself writes "McDONALD AVE", and a word arriving with any lowercase letter is
+# returned untouched (that is what keeps the step idempotent). It comes out
+# "McDONALD Avenue". Put it in a [streets] overrides block before uploading.
+street_case = "title"

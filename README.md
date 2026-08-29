@@ -26,7 +26,8 @@ percent.
 
 Traits (details in config comments): the highest unit share in the family
 (40.0%, collapsed to civic); stable `ADDRESS_ID` key; ALL-CAPS abbreviated
-typed streets; `FULL_ADDRESS` appends the unit (Guelph trap);
+typed streets (title-cased on export since 2026-08-29, `[export]
+street_case`; the source's own "McDONALD AVE" needs an override); `FULL_ADDRESS` appends the unit (Guelph trap);
 `ELECTORAL_DISTRICT_NAME` declared as ward; MUNICIPALITY constant
 (undeclared for-cause). Tiles subdivide 42 uniquely-named "Neighbourhood
 Boundaries" polygons (99.98% point coverage) — and the source rows carry a
